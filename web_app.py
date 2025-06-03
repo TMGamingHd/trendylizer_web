@@ -1,7 +1,8 @@
-
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string, send_file
 from generators.ebook import generate_ebook
 from generators.ad_copy import generate_ad_copy
+from main import save_markdown_and_pdf  # Assuming it's defined in main.py
+import os
 
 app = Flask(__name__)
 
@@ -29,8 +30,15 @@ def index():
 @app.route("/generate-ebook", methods=["POST"])
 def ebook():
     trend = request.form.get("trend", "")
-    result = generate_ebook(trend)
-    return f"<h2>Generated eBook:</h2><pre>{result}</pre>"
+    markdown = generate_ebook(trend)
+    _, pdf_path = save_markdown_and_pdf(markdown, os.path.join("outputs", trend.replace(" ", "_")))
+
+    return send_file(
+        pdf_path,
+        as_attachment=True,
+        download_name=f"{trend}_ebook.pdf",
+        mimetype="application/pdf"
+    )
 
 @app.route("/generate-ad-copy", methods=["POST"])
 def ad_copy():
@@ -41,3 +49,4 @@ def ad_copy():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
