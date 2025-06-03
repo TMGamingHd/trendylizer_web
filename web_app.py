@@ -1,8 +1,10 @@
+
 from flask import Flask, request, render_template_string, send_file
 from generators.ebook import generate_ebook
 from generators.ad_copy import generate_ad_copy
 from main import save_markdown_and_pdf  # Assuming it's defined in main.py
 import os
+import traceback
 
 app = Flask(__name__)
 
@@ -29,24 +31,36 @@ def index():
 
 @app.route("/generate-ebook", methods=["POST"])
 def ebook():
-    trend = request.form.get("trend", "")
-    markdown = generate_ebook(trend)
-    os.makedirs("outputs", exist_ok=True)
-    _, pdf_path = save_markdown_and_pdf(markdown, os.path.join("outputs", trend.replace(" ", "_")))
+    try:
+        trend = request.form.get("trend", "")
+        result = generate_ebook(trend)
 
-    return send_file(
-        pdf_path,
-        as_attachment=True,
-        download_name=f"{trend}_ebook.pdf",
-        mimetype="application/pdf"
-    )
+        # If it's a tuple, extract first part as markdown
+        markdown = result[0] if isinstance(result, tuple) else result
+
+        # Ensure output directory exists
+        os.makedirs("outputs", exist_ok=True)
+
+        _, pdf_path = save_markdown_and_pdf(markdown, os.path.join("outputs", trend.replace(" ", "_")))
+
+        return send_file(
+            pdf_path,
+            as_attachment=True,
+            download_name=f"{trend}_ebook.pdf",
+            mimetype="application/pdf"
+        )
+    except Exception as e:
+        return f"<h2>Error Generating eBook</h2><pre>{traceback.format_exc()}</pre>"
 
 @app.route("/generate-ad-copy", methods=["POST"])
 def ad_copy():
-    trend = request.form.get("trend", "")
-    product_idea = request.form.get("product_idea", "")
-    result = generate_ad_copy(trend, product_idea)
-    return f"<h2>Generated Ad Copy:</h2><pre>{result}</pre>"
+    try:
+        trend = request.form.get("trend", "")
+        product_idea = request.form.get("product_idea", "")
+        result = generate_ad_copy(trend, product_idea)
+        return f"<h2>Generated Ad Copy:</h2><pre>{result}</pre>"
+    except Exception as e:
+        return f"<h2>Error Generating Ad Copy</h2><pre>{traceback.format_exc()}</pre>"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
