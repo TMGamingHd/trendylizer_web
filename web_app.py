@@ -31,6 +31,7 @@ def index():
 def ebook():
     trend = request.form.get("trend", "")
     markdown = generate_ebook(trend)
+    os.makedirs("outputs", exist_ok=True)
     _, pdf_path = save_markdown_and_pdf(markdown, os.path.join("outputs", trend.replace(" ", "_")))
 
     return send_file(
