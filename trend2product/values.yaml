@@ -1,0 +1,20 @@
+backend:
+  replicaCount: 2
+  image:
+    repository: yourdockerhub/trend2product-backend
+    tag: latest
+  service:
+    port: 5000
+
+frontend:
+  replicaCount: 2
+  image:
+    repository: yourdockerhub/trend2product-frontend
+    tag: latest
+  service:
+    port: 80
+  backendUrl: "http://backend-service:5000"
+
+mongo:
+  replicaCount: 1
+  storage: 10Gi
