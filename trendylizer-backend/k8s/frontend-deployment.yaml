@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trend2product-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trend2product-frontend
+  template:
+    metadata:
+      labels:
+        app: trend2product-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: yourdockerhub/trend2product-frontend:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REACT_APP_BACKEND_URL
+          value: "http://backend-service:5000"
