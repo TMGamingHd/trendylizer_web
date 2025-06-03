@@ -1,0 +1,47 @@
+bbc:
+  enabled: false
+cnn:
+  enabled: false
+custom:
+  enabled: false
+financial_news:
+  enabled: false
+github_trending:
+  enabled: true
+google_news:
+  enabled: true
+  query: ''
+google_trends:
+  enabled: true
+hacker_news:
+  enabled: true
+linkedin_news:
+  enabled: true
+mailchimp:
+  apikey: ''
+  enabled: false
+news_api:
+  enabled: false
+notion:
+  enabled: false
+  workspace: ''
+nyt:
+  enabled: false
+product_hunt:
+  enabled: true
+reddit:
+  enabled: true
+  subreddits:
+  - all
+rss:
+  enabled: true
+  feeds: []
+stack_overflow:
+  enabled: true
+twitter:
+  enabled: true
+  keywords: []
+weather:
+  enabled: false
+youtube:
+  enabled: true
