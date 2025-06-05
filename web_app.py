@@ -52,14 +52,29 @@ def ebook():
     except Exception as e:
         return f"<h2>Error Generating eBook</h2><pre>{traceback.format_exc()}</pre>"
 
+
 @app.route("/generate-ad-copy", methods=["POST"])
 def ad_copy():
     try:
         trend = request.form.get("trend", "")
         product_idea = request.form.get("product_idea", "")
         result = generate_ad_copy(trend, product_idea)
-        return f"<h2>Generated Ad Copy:</h2><pre>{result}</pre>"
+
+        # Make sure outputs directory exists
+        os.makedirs("outputs", exist_ok=True)
+
+        # Save ad copy as PDF
+        _, pdf_path = save_markdown_and_pdf(result, os.path.join("outputs", f"ad_copy_{trend.replace(' ', '_')}"))
+
+        return send_file(
+            pdf_path,
+            as_attachment=True,
+            download_name=f"{trend}_ad_copy.pdf",
+            mimetype="application/pdf"
+        )
     except Exception as e:
+        return f"<h2>Error Generating Ad Copy</h2><pre>{traceback.format_exc()}</pre>"
+except Exception as e:
         return f"<h2>Error Generating Ad Copy</h2><pre>{traceback.format_exc()}</pre>"
 
 if __name__ == "__main__":
