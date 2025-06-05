@@ -74,7 +74,7 @@ def ad_copy():
         )
     except Exception as e:
         return f"<h2>Error Generating Ad Copy</h2><pre>{traceback.format_exc()}</pre>"
-except Exception as e:
+    except Exception as e:
         return f"<h2>Error Generating Ad Copy</h2><pre>{traceback.format_exc()}</pre>"
 
 if __name__ == "__main__":
